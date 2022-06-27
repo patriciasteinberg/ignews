@@ -8,9 +8,9 @@ import styles from "./home.module.scss";
 
 interface HomeProps {
   product: {
-    priceId: string,
-    amount: number
-  }
+    priceId: string;
+    amount: number;
+  };
 }
 
 export default function Home({ product }: HomeProps) {
@@ -22,36 +22,39 @@ export default function Home({ product }: HomeProps) {
       <main className={styles.contentContainer}>
         <section className={styles.hero}>
           <span>👏 Hey, welcome</span>
-          <h1>News about the <span>React</span> world.</h1>
+          <h1>
+            News about the <span>React</span> world.
+          </h1>
           <p>
             Get access to all the publications <br />
-            <span>for {product.amount}/month</span>
+            <span>for {product?.amount}/month</span>
           </p>
-          <SubscribeButton priceId={product.priceId} />
+          <SubscribeButton priceId={product?.priceId} />
         </section>
 
         <Image src={AvatarImg} alt="Girl coding" />
       </main>
     </>
-  )
+  );
 }
 
 export const getStaticProps: GetStaticProps = async () => {
   const price = await stripe.prices.retrieve("price_1J9KL2Ev5w6Gus76ZwiBYz7K");
 
   const product = {
-    priceId: price.id,
-    amount: price.unit_amount &&    
-    new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD"
-    }).format(price.unit_amount / 100)
+    priceId: price?.id,
+    amount:
+      price?.unit_amount &&
+      new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "USD",
+      }).format(price?.unit_amount / 100),
   };
 
   return {
     props: {
-      product
+      product,
     },
-    revalidate: 60 * 60 * 24 //24 hours
-  }
-}
+    revalidate: 60 * 60 * 24, //24 hours
+  };
+};
